@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ListarPersonasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route:: get('/personas', [ListarPersonasController::class,'index']);
 
 Route::get('/home', function () {
     return view('home');
