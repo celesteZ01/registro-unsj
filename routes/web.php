@@ -17,6 +17,12 @@ Route:: get ('/usuarios', [UserController::class, 'index']);
 
 Route:: get('/personas', [ListarPersonasController::class,'index']);
 
+use App\Http\Controllers\MovieController;
+
+#moviesss
+Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
+Route::get('/movies/{id}/edit', [MovieController::class, 'edit'])->name('movies.edit');
+
 Route::get('/home', function () {
     return view('home');
 })->name('home');
@@ -30,5 +36,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// #otra forma de definir rutas ?
+// Route:: get ('/prueba', function () {
+//     $personas = [
+//         ['nombre' => 'Juan', 'edad' => 25],
+//         ['nombre' => 'María', 'edad' => 30],
+//         ['nombre' => 'Pedro', 'edad' => 28],
+//     ];
+//     return  $personas;
+// }) -> name('prueba');
 
 require __DIR__.'/auth.php';
