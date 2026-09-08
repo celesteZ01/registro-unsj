@@ -12,9 +12,9 @@ class MovieController extends Controller
             $initialMovies = [
                 [
                     'id' => 1,
-                    'title' => 'Inception',
+                    'title' => 'Avatar',
                     'genre' => 'Ciencia Ficción',
-                    'year' => 2010
+                    'year' => 2025
                 ],
                 [
                     'id' => 2,
