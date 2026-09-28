@@ -10,9 +10,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route:: get('/', function () {
-    return view('welcome');
-});
+Route:: get(
+    '/', 
+    function () {
+        return view('welcome');
+    }
+);
 
 Route::resource('animales', AnimalController::class); #ruta para el CRUD de animalesss
 

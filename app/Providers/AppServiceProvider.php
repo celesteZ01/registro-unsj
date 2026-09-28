@@ -1,8 +1,11 @@
 <?php
 
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Contracts\AnimalServiceInterface;
+use App\Services\FileAnimalService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        # this vincula la interfaz con la implementación de arch plano json
+        $this->app->bind(AnimalServiceInterface::class, FileAnimalService::class);
     }
 
     /**
