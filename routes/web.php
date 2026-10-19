@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ListarPersonasController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AnimalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ListarPersonasController;
+use App\Http\Controllers\MovieController;
+use App\Http\Controllers\AnimalController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,18 +18,19 @@ Route:: get(
     }
 );
 
-Route::resource('animales', AnimalController::class); #ruta para el CRUD de animalesss
-
-#ruta que apunta al métdo index del controlador
-Route:: get ('/usuarios', [UserController::class, 'index']);
-
-Route:: get('/personas', [ListarPersonasController::class,'index']);
-
-use App\Http\Controllers\MovieController;
+Route:: get('/personas', [ListarPersonasController::class,'index']); #lo que venga con la ruta /personas, ejecuta el método index de la clase ListarPersonaController
 
 #moviesss
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{id}/edit', [MovieController::class, 'edit'])->name('movies.edit');
+
+
+Route::resource('animales', AnimalController::class); #ruta para el CRUD de animalesss
+
+
+#ruta que apunta al métdo index del controlador
+Route:: get ('/usuarios', [UserController::class, 'index']);
+
 
 Route::get('/home', function () {
     return view('home');

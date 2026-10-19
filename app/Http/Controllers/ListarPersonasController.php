@@ -7,7 +7,7 @@ use Illuminate\Http\Request; #hace referencia a elementos que va a utilizar de u
 class ListarPersonasController extends Controller #extends indica que  ListarPersonaController hereda de Controller
 {
     //Retorna un array con los nombres de las personas.
-    public function index(){
+    public function index(){ #este index va a cargar un arreglo con los nombres de las personas.
         $personas=[
             "Juan Perez",
             "Maria Gomez",
