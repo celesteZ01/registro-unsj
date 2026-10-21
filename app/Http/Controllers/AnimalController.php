@@ -3,113 +3,87 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Contracts\AnimalServiceInterface;
+use App\Http\Requests\AnimalDataRequest; #pa ahorrar código básicamente
+
+use Exception;
 
 class AnimalController extends Controller
 {
-    #obtener la lista de animales desde la sesión
-    private function getAnimales()
-    {
-        return session()->get('animales', []);
-    }
+    public function __construct(
+        private AnimalServiceInterface $animalService
+    ) {}
 
-    #guardar la lista de animales en la sesión
-    private function setAnimales($animales)
-    {
-        session()->put('animales', $animales);
-    }
-
-    #GET: Listado de animales
+    # GET: Listado de animales
     public function index()
     {
-        $animales = $this->getAnimales();
+        $animales = $this->animalService->all();
         return view('animales.index', compact('animales'));
     }
 
-    #GET: Formulario de creación
+    # GET: Formulario de creación
     public function create()
     {
         return view('animales.create');
     }
 
-    #POST: Guardar nuevo animal
-    public function store(Request $request)
+    # POST: Guardar nuevo animal
+    public function store(AnimalDataRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'especie' => 'required|string|max:50',
-            'edad' => 'required|numeric|min:0'
-        ]);
-
-        $animales = $this->getAnimales();
-
-        #enerar un ID único aut
-        $nuevoId = empty($animales) ? 1 : max(array_column($animales, 'id')) + 1;
-
-        $nuevoAnimal = [
-            'id' => $nuevoId,
-            'nombre' => $request->nombre,
-            'especie' => $request->especie,
-            'edad' => $request->edad
-        ];
-
-        $animales[] = $nuevoAnimal;
-        $this->setAnimales($animales);
+        $data = $request->validated(); #valida los datos
+            // 'nombre' => 'required|string|max:50',
+            // 'especie' => 'required|string|max:50',
+            // 'edad' => 'required|numeric|min:0'
+        
+        $this->animalService->create($data);
 
         return redirect()->route('animales.index')->with('success', 'Animal agregado exitosamente.');
     }
 
-    #GET: formulario de edición
+    # GET: Formulario de edición
     public function edit($id)
     {
-        $animales = $this->getAnimales();
-        $animal = collect($animales)->firstWhere('id', (int)$id);
-
-        if (!$animal) {
-            return redirect()->route('animales.index')->with('error', 'Animal no encontrado.');
+        try {
+            $animal = $this->animalService->find($id);
+            return view('animales.edit', compact('animal'));
+        } catch (Exception $e) {
+            return redirect()->route('animales.index')->with('error', $e->getMessage());
         }
-
-        return view('animales.edit', compact('animal'));
     }
 
-    #PUT: actualizar animal existente
-    public function update(Request $request, $id)
+    # PUT: Actualizar animal existente
+    public function update(AnimalDataRequest $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'especie' => 'required|string|max:50',
-            'edad' => 'required|numeric|min:0'
-        ]);
+        $data = $request->validated();
+            // 'nombre' => 'required|string|max:50', #por AnimalDataRequest ya no es necesario escribir siempre las mismas validaciones
+            // 'especie' => 'required|string|max:50',
+            // 'edad' => 'required|numeric|min:0'
+        
 
-        $animales = $this->getAnimales();
-        $id = (int)$id;
-
-        foreach ($animales as &$animal) {
-            if ($animal['id'] === $id) {
-                $animal['nombre'] = $request->nombre;
-                $animal['especie'] = $request->especie;
-                $animal['edad'] = $request->edad;
-                break;
-            }
+        try {
+            $this->animalService->update($id, $data);
+            return redirect()->route('animales.index')->with('success', 'Animal actualizado correctamente.');
+        } catch (Exception $e) {
+            return redirect()->route('animales.index')->with('error', $e->getMessage());
         }
-
-        $this->setAnimales($animales);
-
-        return redirect()->route('animales.index')->with('success', 'Animal actualizado correctamente.');
     }
 
-    #DELETE: eliminar animal
+    # DELETE: Eliminar animal
     public function destroy($id)
     {
-        $animales = $this->getAnimales();
-        $id = (int)$id;
+        try {
+            $this->animalService->delete($id);
+            return redirect()->route('animales.index')->with('success', 'Animal eliminado correctamente.');
+        } catch (Exception $e) {
+            return redirect()->route('animales.index')->with('error', $e->getMessage());
+        }
+    }
 
-        $animales = array_filter($animales, function ($animal) use ($id) {
-            return $animal['id'] !== $id;
-        });
+    public function reset()
+    {
+        // Le ordena al servicio que vacíe la tabla en la base de datos
+        $this->animalService->reset();
 
-        #re indexar el arreglo
-        $this->setAnimales(array_values($animales));
-
-        return redirect()->route('animales.index')->with('success', 'Animal eliminado correctamente.');
+        return redirect()->route('animales.index')->with('success', 'Animales eliminados correctamente.');
     }
 }
