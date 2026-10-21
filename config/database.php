@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'sqlite'), #env es una función global que en este caso trae DB_CONECTION que está en .env
 
     /*
     |--------------------------------------------------------------------------

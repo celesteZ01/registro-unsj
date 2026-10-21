@@ -19,7 +19,7 @@ class SQLAnimalService implements AnimalServiceInterface
         $row= DB::selectOne('SELECT id, name, species, age FROM animals WHERE id = ?', [$id]);
 
         if (!$row) { #si no lo encuentra
-            AnimalNotFoundException::forId(($id));
+            throw AnimalNotFoundException::forId(($id));
         }
         return (array) $row;
     }
@@ -38,8 +38,8 @@ class SQLAnimalService implements AnimalServiceInterface
 
     }
 
-    public function update(int|string $id, array $data): array {
-        #verificación previa (falla rápida con 404)
+    public function update(string|int $id, array $data): bool {
+        #verificación previa (falla rápida con 404 si no existe)
         $this->find($id);
 
         #sentencia SQL con los nuevos datos 
@@ -47,9 +47,11 @@ class SQLAnimalService implements AnimalServiceInterface
         [
             $data['name'], 
             $data['species'], 
-            $data['age'], $id
+            $data['age'], 
+            $id
         ]);
-        return $this->find($id);
+        // return $this->find($id);
+        return true;
     }
 
     public function delete(int|string $id): bool {

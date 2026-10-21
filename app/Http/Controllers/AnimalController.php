@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contracts\AnimalServiceInterface;
+use App\Http\Requests\AnimalDataRequest; #pa ahorrar código básicamente
+
 use Exception;
 
 class AnimalController extends Controller
@@ -26,14 +28,13 @@ class AnimalController extends Controller
     }
 
     # POST: Guardar nuevo animal
-    public function store(Request $request)
+    public function store(AnimalDataRequest $request)
     {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:50',
-            'especie' => 'required|string|max:50',
-            'edad' => 'required|numeric|min:0'
-        ]);
-
+        $data = $request->validated(); #valida los datos
+            // 'nombre' => 'required|string|max:50',
+            // 'especie' => 'required|string|max:50',
+            // 'edad' => 'required|numeric|min:0'
+        
         $this->animalService->create($data);
 
         return redirect()->route('animales.index')->with('success', 'Animal agregado exitosamente.');
@@ -51,13 +52,13 @@ class AnimalController extends Controller
     }
 
     # PUT: Actualizar animal existente
-    public function update(Request $request, $id)
+    public function update(AnimalDataRequest $request, $id)
     {
-        $data = $request->validate([
-            'nombre' => 'required|string|max:50',
-            'especie' => 'required|string|max:50',
-            'edad' => 'required|numeric|min:0'
-        ]);
+        $data = $request->validated();
+            // 'nombre' => 'required|string|max:50', #por AnimalDataRequest ya no es necesario escribir siempre las mismas validaciones
+            // 'especie' => 'required|string|max:50',
+            // 'edad' => 'required|numeric|min:0'
+        
 
         try {
             $this->animalService->update($id, $data);
@@ -76,5 +77,13 @@ class AnimalController extends Controller
         } catch (Exception $e) {
             return redirect()->route('animales.index')->with('error', $e->getMessage());
         }
+    }
+
+    public function reset()
+    {
+        // Le ordena al servicio que vacíe la tabla en la base de datos
+        $this->animalService->reset();
+
+        return redirect()->route('animales.index')->with('success', 'Animales eliminados correctamente.');
     }
 }
