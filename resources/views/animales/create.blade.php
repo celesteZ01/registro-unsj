@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.animals')
 
 @section('title', 'Registrar Animal')
 
@@ -10,17 +10,26 @@
             @csrf
             <div>
                 <label class="block text-sm font-medium mb-1">Nombre</label>
-                <input type="text" name="nombre" value="{{ old('nombre') }}" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <input type="text" name="name" value="{{ old('name') }}" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                @error('name')
+                <p class="text-red-500 text-sm mt-1" >{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium mb-1">Especie</label>
-                <input type="text" name="especie" value="{{ old('especie') }}" placeholder="Ej: Perro, Felino..." class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <input type="text" name="species" value="{{ old('species') }}" placeholder="Ej: Perro, Felino..." class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                @error('species')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div>
                 <label class="block text-sm font-medium mb-1">Edad (años)</label>
-                <input type="number" name="edad" value="{{ old('edad') }}" min="0" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <input type="number" name="age" value="{{ old('age') }}" min="0" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                @error('age')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="flex items-center gap-3 pt-4">

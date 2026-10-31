@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ListarPersonasController;
+use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnimalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MovieController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,14 +19,18 @@ Route:: get(
     }
 );
 
-Route::resource('animales', AnimalController::class); #ruta para el CRUD de animalesss
+#ruta /species
+Route::post('/species/reset', [SpeciesController::class, 'reset'])->name('species.reset');
+Route::resource('/species', SpeciesController::class);
+
+#ruta /animales
+Route::post('/animales/reset', [AnimalController::class, 'reset']) ->name('animales.reset');
+Route::resource('/animales', AnimalController::class);
 
 #ruta que apunta al métdo index del controlador
 Route:: get ('/usuarios', [UserController::class, 'index']);
 
 Route:: get('/personas', [ListarPersonasController::class,'index']);
-
-use App\Http\Controllers\MovieController;
 
 #moviesss
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');

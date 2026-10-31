@@ -2,12 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Contracts\AnimalServiceInterface;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB; #DB::insert()
 
 class AnimalSeeder extends Seeder
 {
+
+    // public function __construct(
+    //     protected AnimalServiceInterface $animalService #recibe la interfaz
+    // )   {}
     /**
      * Run the database seeds.
      */
@@ -19,6 +24,11 @@ class AnimalSeeder extends Seeder
             ['name' => 'Max', 'species' => 'Perro', 'age' => 3],
             ['name' => 'Charlie', 'species' => 'Loro', 'age' => 4],
         ];
+
+        // $this->animalService->reset();
+        // foreach($animals as $a){
+        //     $this->animalService->create($a);
+        // }
 
         foreach ($animals as $a) {
             DB::insert(

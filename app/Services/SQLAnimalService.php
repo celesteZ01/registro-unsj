@@ -28,9 +28,9 @@ class SQLAnimalService implements AnimalServiceInterface
         
         DB::insert('INSERT INTO animals (name, species, age) VALUES (?, ?, ?)', 
         [
-            $data['name'], 
-            $data['species'], 
-            $data['age']
+            $data['nombre'], 
+            $data['especie'], 
+            $data['edad']
         ]);
 
         $id= DB::getPdo()->lastInsertId(); #obtengo el id del ultimo insert
