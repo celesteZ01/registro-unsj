@@ -5,41 +5,45 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Contracts\UserServiceInterface;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function __construct(
-        protected UserServiceInterface $userService)
-    {
+        protected UserServiceInterface $userService
+    ) {
     }
-    
+
     public function index()
     {
         $users = $this->userService->all();
         return view('users.index', compact('users'));
     }
 
-    
+
     public function create()
     {
         return view('users.create');
     }
 
-    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,employee,customer',
         ]);
+
+        // Hasheamos la contraseña antes de mandarla al servicio
+        $validated['password'] = Hash::make($validated['password']);
 
         $this->userService->create($validated);
 
         return redirect()->route('users.index')->with('success', 'Usuario creado con éxito.');
     }
 
-    
     public function show(string $id)
     {
         $user = $this->userService->find($id);
@@ -47,7 +51,7 @@ class UserController extends Controller
         return view('users.show', compact('user'));
     }
 
-    
+
     public function edit(string $id)
     {
         $user = $this->userService->find($id);
@@ -55,13 +59,12 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-   
+
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|in:admin,employee,customer',
         ]);
 
         $updated = $this->userService->update($id, $validated);
@@ -69,7 +72,6 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado con éxito.');
     }
-
 
     public function destroy(string $id)
     {
