@@ -1,43 +1,69 @@
-@extends('layouts.animals')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Editar Animal
+        </h2>
+    </x-slot>
 
-@section('title', 'Editar Animal')
+    <div class="max-w-lg mx-auto">
+        <a href="{{ route('animales.index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
+        
 
-@section('content')
-    <div class="max-w-xl mx-auto bg-white dark:bg-slate-950 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-        <h2 class="text-xl font-bold mb-6 text-slate-800 dark:text-slate-100">Editar Animal</h2>
-
-        <form action="{{ route('animales.update', $animal['id']) }}" method="POST" class="space-y-4">
+        <form action="{{ route('animales.update', $animal['id'] ?? $animal->id) }}" method="POST"
+            class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             @csrf
             @method('PUT')
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Nombre</label>
-                <input type="text" name="name" value="{{ old('name', $animal['name']) }}" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                @error('name')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+            <div class="space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
+                    <input type="text" name="name" id="name" value="{{ old('name', $animal['name'] ?? $animal->name) }}" required @class([
+                        'w-full px-3.5 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2',
+                        'border-rose-300 focus:border-rose-500 focus:ring-rose-200' => $errors->has('name'),
+                        'border-slate-300 focus:border-indigo-500 focus:ring-indigo-100' => !$errors->has('name'),
+                    ])>
+                    @error('name')
+                        <p class="text-xs text-rose-600 mt-1 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Especie</label>
-                <input type="text" name="species" value="{{ old('species', $animal['species']) }}" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                @error('species')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                 <div>
+                    <label for="species_id" class="block text-sm font-medium text-slate-700 mb-1">Especie</label>
+                    <select name="species_id" id="species_id" @class([
+                        'w-full px-3.5 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 bg-white',
+                        'border-rose-300 focus:border-rose-500 focus:ring-rose-200' => $errors->has('species_id'),
+                        'border-slate-300 focus:border-indigo-500 focus:ring-indigo-100' => !$errors->has('species_id'),
+                      ])>
+                         <option value="">Seleccione una especie</option>
+                        @foreach ($species as $specie)
+                            <option value="{{ $specie['id'] ?? $specie->id }}" {{ old('species_id') == ($specie['id'] ?? $specie->id) ? 'selected' : '' }}>
+                                {{ $specie['name'] ?? $specie->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('species_id')
+                        <p class="text-xs text-rose-600 mt-1 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <div>
-                <label class="block text-sm font-medium mb-1">Edad (años)</label>
-                <input type="number" name="age" value="{{ old('age', $animal['age']) }}" min="0" class="w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent text-slate-900 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                @error('age')
-                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                <div>
+                    <label for="age" class="block text-sm font-medium text-slate-700 mb-1">Edad (años)</label>
+                    <input type="number" name="age" id="age" value="{{ old('age', $animal['age'] ?? $animal->age) }}" min="0" required @class([
+                        'w-full px-3.5 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2',
+                        'border-rose-300 focus:border-rose-500 focus:ring-rose-200' => $errors->has('age'),
+                        'border-slate-300 focus:border-indigo-500 focus:ring-indigo-100' => !$errors->has('age'),
+                    ])>
+                    @error('age')
+                        <p class="text-xs text-rose-600 mt-1 font-medium">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <div class="flex items-center gap-3 pt-4">
-                <button type="submit" class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">Actualizar</button>
-                <a href="{{ route('animales.index') }}" class="rounded-md border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition">Cancelar</a>
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
+                    <a href="{{ route('animales.index') }}" class="px-4 py-2 text-sm text-slate-600 hover:text-slate-900 transition">Cancelar</a>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition">Actualizar</button>
+                </div>
             </div>
         </form>
     </div>
-@endsection
+</x-app-layout>

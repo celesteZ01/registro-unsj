@@ -1,8 +1,13 @@
-<x-layout>
-    <x-slot:title>Editar Especie</x-slot:title>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Editar Especie
+        </h2>
+    </x-slot>
+
     <div class="max-w-lg mx-auto">
         <a href="{{ route('species.index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
-        <h1 class="text-2xl font-bold text-slate-900 mt-2 mb-6">Editar Especie #{{ $species['id'] ?? $species->id }}</h1>
+        
         <form action="{{ route('species.update', $species['id'] ?? $species->id) }}" method="POST"
             class="bg-white p-6 rounded-xl border border-slate-200">
             @csrf
@@ -27,4 +32,4 @@
             </div>
         </form>
     </div>
-</x-layout>
+</x-app-layout>

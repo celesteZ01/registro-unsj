@@ -8,15 +8,33 @@ use Illuminate\Support\Facades\DB;
 class SQLAnimalService implements AnimalServiceInterface
 {
     public function all(): array {
-        $rows= DB::select('SELECT id, name, species, age FROM animals');
+        $rows= DB::select(
+            'SELECT animals.id,
+                    animals.name,
+                    species.name AS species, 
+                    animals.age
+             FROM animals
+             JOIN species ON animals.species_id = species.id'
+        );
+
         $result= array_map(function ($row) { #para cada uno de los elementos del arreglo retornado va convirtiendo cada una de las filas en un array asociativo
             return (array) $row;
         }, $rows);
         return $result;
     }
 
-    public function find(int|string $id): array {
-        $row= DB::selectOne('SELECT id, name, species, age FROM animals WHERE id = ?', [$id]);
+    public function find(int|string $id): array { #trae la relación entre ellos
+        $row= DB::selectOne(
+            'SELECT animals.id AS id,
+                    animals.name AS name,
+                    species.name AS species, 
+                    species.id AS species_id, 
+                    animals.age AS age
+             FROM animals
+             JOIN species ON animals.species_id = species.id
+             WHERE animals.id = ?',
+            [$id]
+        );
 
         if (!$row) { #si no lo encuentra
             AnimalNotFoundException::forId(($id));
@@ -26,11 +44,11 @@ class SQLAnimalService implements AnimalServiceInterface
 
     public function create(array $data): array {
         
-        DB::insert('INSERT INTO animals (name, species, age) VALUES (?, ?, ?)', 
+        DB::insert('INSERT INTO animals (name, species_id, age) VALUES (?, ?, ?)', #actualizado acá clave foránea 
         [
-            $data['nombre'], 
-            $data['especie'], 
-            $data['edad']
+            $data['name'], 
+            $data['species_id'], #actualizado acá clave foránea 
+            $data['age']
         ]);
 
         $id= DB::getPdo()->lastInsertId(); #obtengo el id del ultimo insert
@@ -39,14 +57,14 @@ class SQLAnimalService implements AnimalServiceInterface
     }
 
     public function update(int|string $id, array $data): array {
-        #verificación previa (falla rápida con 404)
+        #verificación previa (falla rápida con 404)/busca el elemento
         $this->find($id);
 
         #sentencia SQL con los nuevos datos 
-        DB::update('UPDATE animals SET name = ?, species = ?, age = ? WHERE id = ?', 
+        DB::update('UPDATE animals SET name = ?, species_id = ?, age = ? WHERE id = ?', 
         [
             $data['name'], 
-            $data['species'], 
+            $data['species_id'], 
             $data['age'], $id
         ]);
         return $this->find($id);

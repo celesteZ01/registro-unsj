@@ -1,5 +1,10 @@
-<x-layout>
-    <x-slot:title>Crear Especie</x-slot:title>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Crear Especie
+        </h2>
+    </x-slot>
+
     <div class="max-w-lg mx-auto">
         <a href="{{ route('species.index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
         <h1 class="text-2xl font-bold text-slate-900 mt-2 mb-6">Crear Nueva Especie</h1>
@@ -25,4 +30,4 @@
             </div>
         </form>
     </div>
-</x-layout>
+</x-app-layout>

@@ -13,15 +13,20 @@ class SpeciesController extends Controller
     {
     }
 
+    #listado de especies
     public function index(): View
     {
         $species = $this->speciesService->all();
         return view('species.index', compact('species'));
     }
+
+    #formulario para crear una nueva especie
     public function create(): View
     {
         return view('species.create');
     }
+
+    #almacenar una nueva especie en el servicio
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate(['name' => 'required|string|max:50']);

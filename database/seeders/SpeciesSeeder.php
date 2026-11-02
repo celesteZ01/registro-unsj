@@ -22,11 +22,12 @@ class SpeciesSeeder extends Seeder
         //     ['name' => 'Caballo'],
         //     ['name' => 'Pez'],
         //     ['name' => 'Elefante'],
-        //     ['name' => 'Tigre'],
-        //     ['name' => 'Oso'],
+            ['name' => 'Tigre'],
+            ['name' => 'Oso'],
         //     ['name' => 'Tortuga'],
         //     ['name' => 'Jirafa'],
-        //     ['name' => 'Serpiente']
+        //     ['name' => 'Oveja'],
+        //     ['name' => 'Serpiente'],
         ]);
         // foreach ($species as $esp) {
         //     DB:: insert ('INSERT INTO species (name) VALUES  (?)', #plantilla sql

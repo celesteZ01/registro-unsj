@@ -10,6 +10,8 @@ use App\Services\FileAnimalService;
 use App\Services\SQLAnimalService;
 use App\Contracts\SpeciesServiceInterface;
 use App\Services\SQLSpeciesService;
+use App\Contracts\UserServiceInterface;
+use App\Services\SQLiteUserService;
 #use App\Services\SpeciesMockService;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,11 +20,15 @@ class AppServiceProvider extends ServiceProvider
      * Register any application services.
      */
     public function register(): void
-    {
+    {   
+        $this->app->singleton(
+            UserServiceInterface::class, #cuando alguien pida la interfaz
+            SQLiteUserService::class #ésta es la clase que hay que mandarle
+        );
         # this vincula la interfaz con la implementación de base de datos
         $this->app->bind(
             AnimalServiceInterface::class, ###cada vez que alguien pida esto
-            SQLAnimalService::class); #se le manda una instancia de esto
+            SQLAnimalService::class); #se le manda una instancia de esto 
 
         $this->app->singleton(
             SpeciesServiceInterface::class,

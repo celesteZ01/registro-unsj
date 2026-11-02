@@ -1,72 +1,68 @@
-@extends('layouts.animals')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Listado de Animales
+        </h2>
+    </x-slot>
 
-@section('title', 'Listado de Animales')
-
-@section('content')
-    <div class="mb-6 flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Listado de Animales</h1>
-    
-        <!-- Contenedor que junta los dos botones a la derecha -->
+    <div class="flex justify-between items-center mb-6">
+        
         <div class="flex items-center gap-3">
-            <a 
-                href="{{ route('animales.create') }}" 
-                class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">
-                + Agregar Animal
+            <a href="{{ route('animales.create') }}"
+                class="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition">
+                + Registrar Animal
             </a>
-            <form 
-                action="{{ route('animales.reset') }}"  method="POST" class="inline">
+            <form action="{{ route('animales.reset') }}" method="POST" class="inline">
                 @csrf
-                @method('POST')
-                <button
-                    type="submit"
-                    style="background-color: #601319;" 
-                    class="rounded-md px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-                    onclick="return confirm ('Resetear los datos? :v')">
-                - Reset Sesión
+                <button type="submit"
+                    class="px-3 py-2 text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg hover:bg-rose-100 transition"
+                    onclick="return confirm('¿Resetear los datos? :v')">
+                    - Reset Sesión
                 </button>
             </form>
         </div>
     </div>
 
-    @if(count($animales) > 0)
-        <div class="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm">
-            <table class="w-full text-left text-sm">
-                <thead class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
-                    <tr>
-                        <th class="px-6 py-3">ID</th>
-                        <th class="px-6 py-3">Nombre</th>
-                        <th class="px-6 py-3">Especie</th>
-                        <th class="px-6 py-3">Edad</th>
-                        <th class="px-6 py-3 text-right">Acciones</th>
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b text-xs text-slate-500 uppercase">
+                <tr>
+                    <th class="py-3 px-6">ID</th>
+                    <th class="py-3 px-6">Nombre</th>
+                    <th class="py-3 px-6">Especie</th>
+                    <th class="py-3 px-6">Edad</th>
+                    <th class="py-3 px-6 text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @forelse ($animales as $animal)
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-6 font-mono text-xs text-slate-400">#{{ $animal['id'] ?? $animal->id }}</td>
+                        <td class="py-3 px-6 font-medium">
+                            <a href="{{ route('animales.show', $animal['id'] ?? $animal->id) }}"
+                                class="hover:underline text-indigo-600 hover:text-indigo-800 font-semibold">
+                                {{ $animal['name'] ?? $animal->name }}
+                            </a>
+                        </td>
+                        <td class="py-3 px-6 text-slate-600">{{ $animal['species'] ?? $animal->species }}</td>
+                        <td class="py-3 px-6 text-slate-600">{{ $animal['age'] ?? $animal->age }} años</td>
+                        <td class="py-3 px-6 text-right space-x-2">
+                            <a href="{{ route('animales.edit', $animal['id'] ?? $animal->id) }}"
+                                class="text-indigo-600 hover:underline">Editar</a>
+                            <form action="{{ route('animales.destroy', $animal['id'] ?? $animal->id) }}" method="POST" class="inline"
+                                onsubmit="return confirm('¿Borrar?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-rose-600 hover:underline">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                    @foreach($animales as $animal)
-                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/50">
-                            <td class="px-6 py-4 font-mono text-xs text-slate-500">{{ $animal['id'] }}</td>
-                            <td class="px-6 py-4 font-semibold text-slate-900 dark:text-slate-100">{{ $animal['name'] }}</td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">{{ $animal['species'] }}</td>
-                            <td class="px-6 py-4 text-slate-600 dark:text-slate-400">{{ $animal['age'] }} años</td>
-                            <td class="px-6 py-4 flex justify-end gap-3">
-                                <a href="{{ route('animales.edit', $animal['id']) }}" class="rounded bg-amber-500/10 px-2.5 py-1.5 text-xs font-semibold text-amber-600 hover:bg-amber-500/20 dark:text-amber-400 transition">
-                                    Editar
-                                </a>
-                                <form action="{{ route('animales.destroy', $animal['id']) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este registro?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="rounded bg-red-500/10 px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-500/20 dark:text-red-400 transition">
-                                        Eliminar
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @else
-        <div class="rounded-lg border border-dashed border-slate-300 dark:border-slate-800 p-8 text-center text-slate-500">
-            No hay animales registrados aún en la sesión.
-        </div>
-    @endif
-@endsection
+                @empty
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-400">No hay animales registrados.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-app-layout>

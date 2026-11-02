@@ -18,11 +18,12 @@ class AnimalSeeder extends Seeder
      */
     public function run(): void
     {
-        $animals= [
-            ['name' => 'Leo', 'species' => 'Tigre', 'age' => 5],
-            ['name' => 'Milo', 'species' => 'Gato', 'age' => 2],
-            ['name' => 'Max', 'species' => 'Perro', 'age' => 3],
-            ['name' => 'Charlie', 'species' => 'Loro', 'age' => 4],
+        $animals= [ #actualizado acá clave foránea
+            ['name' => 'Leo', 'species_id' => 1, 'age' => 5],
+            ['name' => 'Milo', 'species_id' => 2, 'age' => 2],
+            ['name' => 'Max', 'species_id' => 3, 'age' => 3],
+            ['name' => 'Charlie', 'species_id' => 4, 'age' => 4],
+            ['name' => 'Mojito', 'species_id' => 5, 'age' => 6],
         ];
 
         // $this->animalService->reset();
@@ -32,18 +33,18 @@ class AnimalSeeder extends Seeder
 
         foreach ($animals as $a) {
             DB::insert(
-                'INSERT INTO animals (name, species, age) VALUES (?, ?, ?)',
+                'INSERT INTO animals (name, species_id, age) VALUES (?, ?, ?)', #actualizado acá clave foránea
                 [
                     $a['name'],
-                    $a['species'], 
+                    $a['species_id'], 
                     $a['age']
                  ]
             );
         }
 
-        DB::insert(
-            'INSERT INTO animals (name, species, age) VALUES ("Roco", "Tigre", 1)',
-        );
+        // DB::insert(
+        //     'INSERT INTO animals (name, species_id, age) VALUES ("Roco", "Tigre", 1)', #actualizado acá clave foránea
+        // );
 
         #otra forma de cargar datos especificando el nombre del campo
         // DB::table('animals')->insert([

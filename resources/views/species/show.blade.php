@@ -1,7 +1,8 @@
-yout>
-<x-slot:title>Detalle: {{ $species['name'] }}</x-slot:title>
+<x-app-layout>
+
 <div class="max-w-md mx-auto">
     <a href="{{ route('species.index') }}" class="text-sm text-indigo-600 hover:underline">← Volver</a>
+   
     <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mt-4">
         <div class="flex justify-between items-center pb-3 border-b">
             <span class="font-mono text-xs text-slate-500">ID: #{{ $species['id'] }}</span>
@@ -17,10 +18,11 @@ yout>
                 class="text-sm text-indigo-600 font-medium hover:underline">Editar</a>
             <form action="{{ route('species.destroy', $species['id']) }}" method="POST"
                 onsubmit="return confirm('¿Eliminar?');">
-                @csrf @method('DELETE')
+                @csrf
+                @method('DELETE')
                 <button class="text-sm text-rose-600 font-medium hover:underline">Eliminar</button>
             </form>
         </div>
     </div>
 </div>
-</x-layout>
+</x-app-layout>
