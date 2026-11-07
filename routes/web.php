@@ -10,8 +10,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['auth', 'user_is:admin'])->resource('/users', UserController::class); #obliga a estar logueado y ser admin para acceder a estas rutas. #user_is configurado en boostrap/app.php
+
 #obliga a estar logueado y ser admin para acceder a estas rutas.
-Route::middleware(['auth', 'is_admin'])->resource('/users', UserController::class);
+#Route::middleware(['auth', 'is_admin'])->resource('/users', UserController::class); #is_admin configurado en boostrap/app.php
 
 Route::middleware('auth')->group(function () { #obliga a estar logueado para acceder a estas rutas.
     

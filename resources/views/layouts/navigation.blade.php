@@ -17,19 +17,21 @@
                         Inicio
                     </x-nav-link>
 
-                    @if (Auth::user()->role == 'admin')
+                    @role('admin', 'employee') 
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                             Usuarios
                         </x-nav-link>
-                    @endif
+                        
+                         <x-nav-link :href="route('animales.index')" :active="request()->routeIs('animales.index')">
+                            Animales
+                        </x-nav-link>
+                    @endrole
 
-                    <x-nav-link :href="route('animales.index')" :active="request()->routeIs('animales.index')">
-                        Animales
-                    </x-nav-link>
-                    
-                    <x-nav-link :href="route('species.index')" :active="request()->routeIs('species.index')">
-                        Especies
-                    </x-nav-link>
+                    @role('admin')
+                        <x-nav-link :href="route('species.index')" :active="request()->routeIs('species.index')">
+                            Especies
+                        </x-nav-link>
+                    @endrole
 
                 </div>
             </div>

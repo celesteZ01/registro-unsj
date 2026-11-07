@@ -6,6 +6,10 @@ interface UserServiceInterface
 {
     public function all(): array;
 
+    public function customer(): array;
+
+    public function employee(): array;
+
     public function find(string $id): ?array;
 
     public function create(array $data): array;

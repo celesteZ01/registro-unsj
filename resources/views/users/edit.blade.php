@@ -27,6 +27,7 @@
                 </div>
 
                 {{-- Rol --}}
+                @role('admin')
                 <div>
                     <label for="role" class="block text-sm font-medium text-slate-700 mb-1">Rol</label>
                     @php
@@ -45,9 +46,11 @@
                         <p class="text-xs text-rose-600 mt-1 font-medium">{{ $message }}</p>
                     @enderror
                 </div>
+                @endrole
 
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-100">
-                    <a href="{{ route('users.index') }}" class="px-4 py-2 text-sm text-slate-600 hover:text-slate-900 transition">Cancelar</a>
+                    <a href="{{ route('users.index') }}"
+                        class="px-4 py-2 text-sm text-slate-600 hover:text-slate-900 transition">Cancelar</a>
                     <button type="submit"
                         class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium transition">Actualizar</button>
                 </div>
