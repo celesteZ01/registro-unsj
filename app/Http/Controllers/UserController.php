@@ -15,20 +15,32 @@ class UserController extends Controller
     ) {
     }
 
-    public function index()
-    {
-        $users= [];
-        $role= Auth::user()->role;
-        if ($role === 'admin') {
-            $users = $this->userService->all();
-        } elseif ($role === 'employee') {
-            $users = $this->userService->customer();
-        } else {
-            abort(403, 'No tienes permiso para acceder a esta página.');
-        }
+    // public function index()
+    // {
+    //     $users= [];
+    //     $role= Auth::user()->role;
+    //     if ($role === 'admin') {
+    //         $users = $this->userService->all();
+    //     } elseif ($role === 'employee') {
+    //         $users = $this->userService->customer();
+    //     } else {
+    //         abort(403, 'No tienes permiso para acceder a esta página.');
+    //     }
         
-        return view('users.index', compact('users'));
+    //     return view('users.index', compact('users'));
+    // }
+
+    public function index()
+{
+    $users = $this->userService->all();
+
+    // Si quien está mirando es un empleado, filtramos los administradores
+    if (auth()->user()->role === 'employee') {
+        $users = array_filter($users, fn($u) => ($u['role'] ?? '') !== 'admin');
     }
+
+    return view('users.index', compact('users'));
+}
 
 
     public function create()

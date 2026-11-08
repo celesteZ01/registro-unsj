@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Contracts\AnimalServiceInterface;
 use App\Http\Requests\AnimalDataRequest; #pa ahorrar código básicamente
 
+use App\Contracts\AnimalEventServiceInterface;
+use App\Contracts\AnimalOwnerServiceInterface;
+use App\Contracts\UserServiceInterface;
+
 use Exception;
 
 class AnimalController extends Controller
@@ -14,7 +18,8 @@ class AnimalController extends Controller
     public function __construct(
         private AnimalServiceInterface $animalService,
         private SpeciesServiceInterface $speciesService
-    ) {}
+    ) {
+    }
 
     # GET: Listado de animales
     public function index()
@@ -27,7 +32,7 @@ class AnimalController extends Controller
     # GET: Formulario de creación
     public function create()
     {
-        $species= $this->speciesService->all();
+        $species = $this->speciesService->all();
         return view('animales.create', ['species' => $species]);
     }
 
@@ -35,28 +40,44 @@ class AnimalController extends Controller
     public function store(AnimalDataRequest $request)
     {
         $data = $request->validated(); #valida los datos
-            // 'nombre' => 'required|string|max:50',
-            // 'especie' => 'required|string|max:50',
-            // 'edad' => 'required|numeric|min:0'
-        
+        // 'nombre' => 'required|string|max:50',
+        // 'especie' => 'required|string|max:50',
+        // 'edad' => 'required|numeric|min:0'
+
         $this->animalService->create($data);
 
         return redirect()->route('animales.index')->with('success', 'Animal agregado exitosamente.');
     }
 
-     public function show(string $id){
+    //  public function show(string $id){
+    //     $animal = $this->animalService->find($id);
+    //     abort_if(!$animal, 404, 'Animal no encontrado.');
+    //     return view('animales.show', compact('animal', 'id')); #id?
+    // }
+    public function show(
+        string $id,
+        AnimalOwnerServiceInterface $animalOwnerService,
+        AnimalEventServiceInterface $animalEventService,
+        UserServiceInterface $userService
+    ) {
         $animal = $this->animalService->find($id);
-        abort_if(!$animal, 404, 'Animal no encontrado.');
-        return view('animales.show', compact('animal', 'id')); #id?
+        abort_if(!$animal, 404);
+
+        $owners = $animalOwnerService->all($id);
+        $events = $animalEventService->all($id);
+        $availableUsers = $userService->customer(); // Para el selector desplegable de asignar dueño
+
+        return view('animales.show', compact('animal', 'owners', 'events', 'availableUsers'));
     }
+
 
     # GET: Formulario de edición
     public function edit($id)
     {
         try {
-            $species= $this->speciesService->all();
+            $species = $this->speciesService->all();
             $animal = $this->animalService->find($id);
-            return view('animales.edit', ['id' => $id, 'animal' => $animal, 'species' => $species]); 
+            return view('animales.edit', ['id' => $id, 'animal' => $animal, 'species' => $species]);
             #return view('animales.edit', compact('animal'));
         } catch (Exception $e) {
             return redirect()->route('animales.index')->with('error', $e->getMessage());
@@ -67,10 +88,10 @@ class AnimalController extends Controller
     public function update(AnimalDataRequest $request, $id)
     {
         $data = $request->validated();
-            // 'nombre' => 'required|string|max:50', #por AnimalDataRequest ya no es necesario escribir siempre las mismas validaciones
-            // 'especie' => 'required|string|max:50',
-            // 'edad' => 'required|numeric|min:0'
-        
+        // 'nombre' => 'required|string|max:50', #por AnimalDataRequest ya no es necesario escribir siempre las mismas validaciones
+        // 'especie' => 'required|string|max:50',
+        // 'edad' => 'required|numeric|min:0'
+
 
         try {
             $this->animalService->update($id, $data);

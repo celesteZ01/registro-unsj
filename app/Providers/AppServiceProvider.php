@@ -33,31 +33,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            AnimalOwnerServiceInterface::class,
-            SQLiteAnimalOwnerService::class
-        );
-
+        # this vincula la interfaz con la implementación de base de datos
+        #USUARIO
         $this->app->singleton(
             UserServiceInterface::class, #cuando alguien pida la interfaz
             SQLiteUserService::class #ésta es la clase que hay que mandarle
         );
-        # this vincula la interfaz con la implementación de base de datos
+
+        #ANIMAL
         $this->app->bind(
             AnimalServiceInterface::class, ###cada vez que alguien pida esto
-            SQLAnimalService::class
-        ); #se le manda una instancia de esto 
+            SQLAnimalService::class #se le manda una instancia de esto 
+        ); 
 
+        #SPECIES
         $this->app->singleton(
             SpeciesServiceInterface::class,
             SQLSpeciesService::class
         );
 
+        #OWNER DE ANIMAL
         $this->app->singleton(
             AnimalOwnerServiceInterface::class,
             SQLiteAnimalOwnerService::class
         );
 
+        #EVENT DE ANIMAL
         $this->app->singleton(
             AnimalEventServiceInterface::class,
             SQLiteAnimalEventService::class
@@ -76,11 +77,7 @@ class AppServiceProvider extends ServiceProvider
 
 
     public function boot(): void
-    {
-        // Blade::if('role', function (...$roles) {
-        //     return Auth::check() && \in_array(Auth::user()->role, $roles);
-        // });
-
+    {   #esto es para usar @role() en navigation
         Blade::if('role', function (...$roles) {
             return auth()->check() && \in_array(auth()->user()->role, $roles);
         });

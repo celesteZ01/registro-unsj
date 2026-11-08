@@ -38,7 +38,9 @@
                         'border-rose-300 focus:border-rose-500 focus:ring-rose-200' => $errors->has('role'),
                         'border-slate-300 focus:border-indigo-500 focus:ring-indigo-100' => !$errors->has('role'),
                     ])>
+                        @role('admin')
                         <option value="admin" {{ $userRole === 'admin' ? 'selected' : '' }}>Admin</option>
+                        @endrole
                         <option value="employee" {{ $userRole === 'employee' ? 'selected' : '' }}>Empleado</option>
                         <option value="customer" {{ $userRole === 'customer' ? 'selected' : '' }}>Cliente</option>
                     </select>
