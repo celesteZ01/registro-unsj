@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Ai\Agents;
+
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Contracts\Agent;
+use Laravel\Ai\Contracts\Conversational;
+use Laravel\Ai\Contracts\HasStructuredOutput;
+use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Contracts\Tool;
+use Laravel\Ai\Messages\Message;
+use Laravel\Ai\Promptable;
+use Laravel\Ai\Providers\Tools\ProviderTool;
+use Stringable;
+
+class OtroVendedor implements Agent, Conversational, HasStructuredOutput, HasTools
+{
+    use Promptable;
+
+    /**
+     * Get the instructions that the agent should follow.
+     */
+    public function instructions(): Stringable|string
+    {
+        return 'You are a helpful assistant.';
+    }
+
+    /**
+     * Get the list of messages comprising the conversation so far.
+     *
+     * @return Message[]
+     */
+    public function messages(): iterable
+    {   
+        $mensaje= [ #ejemplo
+            new Message('system', 'a'),
+            new Message('user', 'b'),
+            new Message('assistant', 'c'),
+        ];
+        return $mensaje;
+    }
+
+    /**
+     * Get the tools available to the agent.
+     *
+     * @return list<Agent|Tool|ProviderTool>
+     */
+    public function tools(): iterable
+    {
+        return [];
+    }
+
+    /**
+     * Get the agent's structured output schema definition.
+     */
+
+    #puede responder con schema (sería opciones resp)
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'value' => $schema->string()->required(),
+        ];
+    }
+}

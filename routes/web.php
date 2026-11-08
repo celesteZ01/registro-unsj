@@ -5,6 +5,7 @@ use App\Http\Controllers\SpeciesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Ai\Agents\PetAssist;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,7 +24,12 @@ Route::middleware('auth')->group(function () { #obliga a estar logueado para acc
 });
 
 Route::get('/dashboard', function () {
+    #no funciona xq no tengo ia
+    #$mensaje= app(PetAssist::class)->prompt('Responde'); #controller inline
+    #$mensaje= Str::markdown($mensaje);
+    #return view('dashboard', compact('mensaje'));
     return view('dashboard');
+
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () { #obliga a estar logueado para acceder a estas rutas.
